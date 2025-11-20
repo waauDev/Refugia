@@ -1,4 +1,5 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+## Refugia
+Refugia es una plataforma donde puedes tener reuniones y espacios privados asistidos por IA, pensada para conversar, desahogarte y organizar ideas en un entorno seguro y tranquilo. Su enfoque es combinar videollamadas con una IA que escucha, guía y ayuda a expresar lo que sientes de forma simple y humana.
 
 ## Getting Started
 
