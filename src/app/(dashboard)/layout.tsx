@@ -10,7 +10,7 @@ const Layout = ({children}:Props) =>{
     return (
     <SidebarProvider>
         <DashBoardSideBar/>
-        <main className="flex flex-col h-screen w-screen bg-muted">
+        <main className="flex flex-col h-screen bg-muted">
         {children}
         </main>
     </SidebarProvider>
