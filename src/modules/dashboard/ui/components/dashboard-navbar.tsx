@@ -13,7 +13,7 @@ export const DashboardNavar = () =>{
 
     useEffect(()=>{
         const down = (e:KeyboardEvent)=>{
-            if(e.key ==="f" && (e.metaKey||e.ctrlKey)){
+            if(e.key ==="k" && (e.metaKey||e.ctrlKey)){
                 e.preventDefault();
                 setCommandOpen((open)=> !open);
             }
@@ -40,7 +40,7 @@ export const DashboardNavar = () =>{
                     <SearchIcon/>
                     Buscar
                     <kbd className="ml-auto pointer-events-none inline-flex h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium text-muted-foreground">
-                        <span className="text-xs">&#8984;</span>F
+                        <span className="text-xs">&#8984;</span>K
                     </kbd>
                 </Button>
             </nav>
