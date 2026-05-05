@@ -28,6 +28,9 @@ function getQueryClient() {
 function getUrl() {
   const base = (() => {
     if (typeof window !== 'undefined') return '';
+    if(!process.env.NEXT_PUBLIC_APP_URL){
+        throw new Error('NEXT_PUBLIC_APP_URL no esta sirviendo');
+    }
     return process.env.NEXT_PUBLIC_APP_URL;
   })();
   return `${base}/api/trpc`;

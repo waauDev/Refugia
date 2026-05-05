@@ -1,37 +1,146 @@
-## Refugia
-Refugia es una plataforma donde puedes tener reuniones y espacios privados asistidos por IA, pensada para conversar, desahogarte y organizar ideas en un entorno seguro y tranquilo. Su enfoque es combinar videollamadas con una IA que escucha, guía y ayuda a expresar lo que sientes de forma simple y humana.
+# Refugia
 
-## Getting Started
+Refugia es una plataforma enfocada en crear espacios privados y tranquilos para conversar, organizar ideas y, a futuro, sostener encuentros asistidos por IA. El proyecto esta construido con Next.js y ya cuenta con una base funcional de autenticacion, dashboard protegido, capa de datos y consumo inicial de tRPC.
 
-First, run the development server:
+## Estado actual del proyecto
+
+Hoy el repositorio ya incluye:
+
+- App Router con separacion entre flujo publico y flujo autenticado.
+- Autenticacion con `better-auth`.
+- Inicio de sesion y registro por email/contrasena.
+- Inicio de sesion social con Google y GitHub.
+- Dashboard protegido por sesion.
+- Sidebar, navbar y menu de usuario para la experiencia autenticada.
+- Integracion inicial de `tRPC` con `TanStack Query`.
+- Configuracion de base de datos con `Drizzle ORM` y Neon/PostgreSQL.
+- Libreria amplia de componentes UI basada en Radix + Tailwind CSS v4.
+
+Tambien hay piezas que todavia se ven en etapa temprana o base:
+
+- El `router` de tRPC solo expone un procedimiento de ejemplo (`hello`).
+- La vista principal autenticada hoy muestra una prueba simple del consumo de tRPC.
+- Existen accesos del sidebar como `/meetings`, `/agents` y `/upgrade`, pero esas secciones aun no aparecen implementadas en este repo.
+- Los metadatos globales de Next siguen con valores genericos en `src/app/layout.tsx`.
+
+## Stack
+
+- `Next.js 15` + `React 19`
+- `TypeScript`
+- `Tailwind CSS 4`
+- `better-auth`
+- `tRPC v11`
+- `@tanstack/react-query`
+- `Drizzle ORM`
+- `Neon / PostgreSQL`
+- `react-hook-form` + `zod`
+- Componentes UI con `Radix UI`
+
+## Estructura principal
+
+```text
+src/
+  app/
+    (auth)/           # Rutas publicas: sign-in y sign-up
+    (dashboard)/      # Layout protegido y home autenticado
+    api/auth/         # Handler de better-auth
+    api/trpc/         # Endpoint de tRPC
+  components/ui/      # Sistema de componentes reutilizables
+  db/                 # Cliente y schema de Drizzle
+  lib/                # Auth server/client y utilidades
+  modules/
+    auth/             # Vistas de autenticacion
+    dashboard/        # Navbar, sidebar y user menu
+    home/             # Vista principal autenticada
+  trpc/               # Init, cliente, servidor y router
+```
+
+## Rutas actuales
+
+- `/sign-in`: inicio de sesion.
+- `/sign-up`: registro de usuario.
+- `/`: home autenticado. Si no hay sesion, redirige a `/sign-in`.
+- `/api/auth/[...all]`: endpoints de autenticacion.
+- `/api/trpc/[trpc]`: endpoint del router de tRPC.
+
+## Variables de entorno
+
+Crea un archivo `.env` con al menos estas variables:
+
+```env
+DATABASE_URL=
+BETTER_AUTH_SECRET=
+NEXT_PUBLIC_APP_URL=http://localhost:3000
+
+GITHUB_CLIENT_ID=
+GITHUB_CLIENT_SECRET=
+
+GOOGLE_CLIENT_ID=
+GOOGLE_CLIENT_SECRET=
+```
+
+Notas:
+
+- `DATABASE_URL` es obligatoria para la conexion con Drizzle/Neon.
+- `BETTER_AUTH_SECRET` es obligatoria para `better-auth`.
+- `NEXT_PUBLIC_APP_URL` tambien es necesaria porque el cliente tRPC la usa en entorno servidor.
+- Si no vas a usar login social, las credenciales de Google y GitHub pueden dejarse pendientes, pero el flujo social no funcionara.
+
+## Instalacion y desarrollo
+
+```bash
+npm install
+npm run dev
+```
+
+La app quedara disponible en:
+
+```text
+http://localhost:3000
+```
+
+## Base de datos
+
+El proyecto ya tiene configuracion de Drizzle y schema para autenticacion:
+
+- `user`
+- `session`
+- `account`
+- `verification`
+
+Comandos disponibles:
+
+```bash
+npm run db:push
+npm run db:studio
+```
+
+## Scripts
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm run build
+npm run start
+npm run lint
+npm run db:push
+npm run db:studio
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Revision rapida del estado actual
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Durante la revision de este repo se confirmo lo siguiente:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- El flujo de autenticacion esta conectado tanto del lado cliente como del lado servidor.
+- El dashboard principal ya protege la ruta `/` con validacion de sesion.
+- El `README` anterior seguia siendo casi el de `create-next-app`, asi que no representaba el proyecto real.
+- `npm run lint` paso correctamente.
+- Hay una advertencia de ESLint indicando que no se detecto el plugin de Next en la configuracion actual.
+- Se observan varios textos con problemas de codificacion en algunos archivos (`Contrasena`, `Sesion`, etc.), algo que convendria corregir pronto.
 
-## Learn More
+## Proximos pasos recomendados
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+1. Actualizar `metadata` en `src/app/layout.tsx` para reflejar la marca Refugia.
+2. Corregir los problemas de codificacion en las vistas de autenticacion y dashboard.
+3. Reemplazar el contexto mock de tRPC (`userId: 'user_123'`) por contexto real de sesion.
+4. Implementar las rutas enlazadas desde el sidebar o esconderlas hasta que existan.
+5. Expandir el router de tRPC con casos reales del dominio de Refugia.
