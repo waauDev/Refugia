@@ -1,31 +1,37 @@
 # Refugia
 
-Refugia es una plataforma enfocada en crear espacios privados y tranquilos para conversar, organizar ideas y, a futuro, sostener encuentros asistidos por IA. El proyecto esta construido con Next.js y ya cuenta con una base funcional de autenticacion, dashboard protegido, capa de datos y consumo inicial de tRPC.
+Refugia es una aplicacion web construida con Next.js para crear un espacio privado de trabajo y conversacion asistido por IA. El proyecto ya tiene una base funcional de autenticacion, dashboard protegido, capa de datos con PostgreSQL y un primer modulo de agentes conectado por tRPC.
 
-## Estado actual del proyecto
+## Estado actual
 
-Hoy el repositorio ya incluye:
+El repositorio incluye actualmente:
 
-- App Router con separacion entre flujo publico y flujo autenticado.
+- App Router de Next.js con rutas separadas para autenticacion y dashboard.
 - Autenticacion con `better-auth`.
-- Inicio de sesion y registro por email/contrasena.
+- Registro e inicio de sesion con email y contrasena.
 - Inicio de sesion social con Google y GitHub.
-- Dashboard protegido por sesion.
-- Sidebar, navbar y menu de usuario para la experiencia autenticada.
-- Integracion inicial de `tRPC` con `TanStack Query`.
-- Configuracion de base de datos con `Drizzle ORM` y Neon/PostgreSQL.
-- Libreria amplia de componentes UI basada en Radix + Tailwind CSS v4.
+- Layout autenticado con sidebar, navbar, buscador/comando y menu de usuario.
+- Proteccion de la ruta `/` mediante sesion del lado servidor.
+- Integracion de `tRPC v11` con `TanStack Query`.
+- Prefetch, hidratacion, `Suspense` y `ErrorBoundary` en la pantalla de agentes.
+- Base de datos PostgreSQL/Neon con Drizzle ORM.
+- Schema de autenticacion y tabla `agents`.
+- Sistema de componentes UI basado en Radix UI, Tailwind CSS v4 y shadcn/ui.
 
-Tambien hay piezas que todavia se ven en etapa temprana o base:
+Tambien hay partes que siguen en etapa inicial:
 
-- El `router` de tRPC solo expone un procedimiento de ejemplo (`hello`).
-- La vista principal autenticada hoy muestra una prueba simple del consumo de tRPC.
-- Existen accesos del sidebar como `/meetings`, `/agents` y `/upgrade`, pero esas secciones aun no aparecen implementadas en este repo.
-- Los metadatos globales de Next siguen con valores genericos en `src/app/layout.tsx`.
+- La vista principal autenticada (`/`) solo muestra contenido placeholder.
+- La ruta `/agents` consulta agentes desde la base de datos, pero por ahora los muestra como JSON.
+- El procedimiento `agents.getMany` incluye un delay artificial de 5 segundos.
+- El contexto de tRPC todavia usa un `userId` mock (`user_123`) y no la sesion real.
+- El sidebar enlaza a `/meetings` y `/upgrade`, pero esas rutas aun no existen.
+- Los metadatos globales de Next siguen con los valores por defecto de `create-next-app`.
+- Hay textos con problemas de codificacion en algunas vistas, especialmente en palabras acentuadas y signos de apertura.
 
 ## Stack
 
-- `Next.js 15` + `React 19`
+- `Next.js 15.3`
+- `React 19`
 - `TypeScript`
 - `Tailwind CSS 4`
 - `better-auth`
@@ -33,39 +39,84 @@ Tambien hay piezas que todavia se ven en etapa temprana o base:
 - `@tanstack/react-query`
 - `Drizzle ORM`
 - `Neon / PostgreSQL`
-- `react-hook-form` + `zod`
-- Componentes UI con `Radix UI`
+- `react-hook-form`
+- `zod`
+- `Radix UI`
+- `lucide-react`
+- `react-icons`
+- `sonner`
 
-## Estructura principal
+## Estructura
 
 ```text
 src/
   app/
-    (auth)/           # Rutas publicas: sign-in y sign-up
-    (dashboard)/      # Layout protegido y home autenticado
-    api/auth/         # Handler de better-auth
-    api/trpc/         # Endpoint de tRPC
-  components/ui/      # Sistema de componentes reutilizables
-  db/                 # Cliente y schema de Drizzle
-  lib/                # Auth server/client y utilidades
+    (auth)/                 # Layout y paginas de sign-in/sign-up
+    (dashboard)/            # Layout autenticado, home y agentes
+    api/auth/[...all]/      # Handler de better-auth
+    api/trpc/[trpc]/        # Endpoint HTTP de tRPC
+    globals.css             # Estilos globales y tokens de Tailwind
+    layout.tsx              # Layout raiz y provider de tRPC
+  components/
+    ui/                     # Componentes UI reutilizables
+    error-state.tsx         # Estado de error reutilizable
+    loading-state.tsx       # Estado de carga reutilizable
+    responsive-dialog.tsx   # Dialog/drawer responsive
+  db/
+    index.ts                # Cliente Drizzle
+    schema.ts               # Tablas de auth y agents
+  lib/
+    auth.ts                 # Configuracion server de better-auth
+    auth-client.ts          # Cliente de better-auth
+    utils.ts                # Helpers compartidos
   modules/
-    auth/             # Vistas de autenticacion
-    dashboard/        # Navbar, sidebar y user menu
-    home/             # Vista principal autenticada
-  trpc/               # Init, cliente, servidor y router
+    agents/                 # Procedimientos y vista de agentes
+    auth/                   # Vistas de login y registro
+    dashboard/              # Sidebar, navbar, comando y user button
+    home/                   # Vista inicial del dashboard
+  trpc/
+    routers/_app.ts         # Router principal
+    init.ts                 # Contexto y helpers de tRPC
+    client.tsx              # Provider cliente de tRPC + React Query
+    server.tsx              # Helpers server para prefetch/hidratacion
 ```
 
-## Rutas actuales
+## Rutas
 
 - `/sign-in`: inicio de sesion.
 - `/sign-up`: registro de usuario.
-- `/`: home autenticado. Si no hay sesion, redirige a `/sign-in`.
-- `/api/auth/[...all]`: endpoints de autenticacion.
+- `/`: home del dashboard. Redirige a `/sign-in` si no hay sesion.
+- `/agents`: listado inicial de agentes via tRPC.
+- `/api/auth/[...all]`: endpoints de `better-auth`.
 - `/api/trpc/[trpc]`: endpoint del router de tRPC.
+
+Enlaces visibles pero pendientes de implementar:
+
+- `/meetings`
+- `/upgrade`
+
+## Base de datos
+
+El proyecto usa Drizzle con PostgreSQL. Las tablas definidas hoy son:
+
+- `user`
+- `session`
+- `account`
+- `verification`
+- `agents`
+
+La tabla `agents` contiene:
+
+- `id`
+- `name`
+- `userId`
+- `instructions`
+- `createdAt`
+- `updatedAt`
 
 ## Variables de entorno
 
-Crea un archivo `.env` con al menos estas variables:
+Crea un archivo `.env` en la raiz del proyecto:
 
 ```env
 DATABASE_URL=
@@ -81,66 +132,57 @@ GOOGLE_CLIENT_SECRET=
 
 Notas:
 
-- `DATABASE_URL` es obligatoria para la conexion con Drizzle/Neon.
-- `BETTER_AUTH_SECRET` es obligatoria para `better-auth`.
-- `NEXT_PUBLIC_APP_URL` tambien es necesaria porque el cliente tRPC la usa en entorno servidor.
-- Si no vas a usar login social, las credenciales de Google y GitHub pueden dejarse pendientes, pero el flujo social no funcionara.
+- `DATABASE_URL` es necesaria para Drizzle y Neon/PostgreSQL.
+- `BETTER_AUTH_SECRET` es necesaria para firmar la autenticacion.
+- `NEXT_PUBLIC_APP_URL` es usada por Better Auth y por el cliente tRPC en entorno servidor.
+- Las credenciales de Google y GitHub son necesarias para que funcione el login social.
 
-## Instalacion y desarrollo
+## Instalacion
 
 ```bash
 npm install
+```
+
+## Desarrollo
+
+```bash
 npm run dev
 ```
 
-La app quedara disponible en:
+La app queda disponible en:
 
 ```text
 http://localhost:3000
 ```
 
-## Base de datos
-
-El proyecto ya tiene configuracion de Drizzle y schema para autenticacion:
-
-- `user`
-- `session`
-- `account`
-- `verification`
-
-Comandos disponibles:
-
-```bash
-npm run db:push
-npm run db:studio
-```
-
 ## Scripts
 
 ```bash
-npm run dev
-npm run build
-npm run start
-npm run lint
-npm run db:push
-npm run db:studio
+npm run dev       # Servidor de desarrollo
+npm run build     # Build de produccion
+npm run start     # Servidor de produccion
+npm run lint      # Lint configurado en package.json
+npm run db:push   # Sincroniza el schema con la base de datos
+npm run db:studio # Abre Drizzle Studio
 ```
 
-## Revision rapida del estado actual
+## Flujo de datos actual
 
-Durante la revision de este repo se confirmo lo siguiente:
+La ruta `/agents` usa el router `agents` de tRPC:
 
-- El flujo de autenticacion esta conectado tanto del lado cliente como del lado servidor.
-- El dashboard principal ya protege la ruta `/` con validacion de sesion.
-- El `README` anterior seguia siendo casi el de `create-next-app`, asi que no representaba el proyecto real.
-- `npm run lint` paso correctamente.
-- Hay una advertencia de ESLint indicando que no se detecto el plugin de Next en la configuracion actual.
-- Se observan varios textos con problemas de codificacion en algunos archivos (`Contrasena`, `Sesion`, etc.), algo que convendria corregir pronto.
+1. `src/app/(dashboard)/agents/page.tsx` crea un query client y hace prefetch de `agents.getMany`.
+2. `src/trpc/server.tsx` expone helpers para prefetch e hidratacion.
+3. `src/modules/agents/server/procedures.ts` consulta la tabla `agents` con Drizzle.
+4. `src/modules/agents/ui/views/agents-view.tsx` consume la query con `useSuspenseQuery`.
 
-## Proximos pasos recomendados
+## Pendientes recomendados
 
-1. Actualizar `metadata` en `src/app/layout.tsx` para reflejar la marca Refugia.
-2. Corregir los problemas de codificacion en las vistas de autenticacion y dashboard.
-3. Reemplazar el contexto mock de tRPC (`userId: 'user_123'`) por contexto real de sesion.
-4. Implementar las rutas enlazadas desde el sidebar o esconderlas hasta que existan.
-5. Expandir el router de tRPC con casos reales del dominio de Refugia.
+1. Conectar el contexto de tRPC con la sesion real de Better Auth.
+2. Filtrar `agents.getMany` por usuario autenticado.
+3. Reemplazar el JSON de `/agents` por una interfaz de listado.
+4. Crear formularios para agregar, editar y eliminar agentes.
+5. Quitar el delay artificial de `agents.getMany`.
+6. Implementar o esconder los enlaces a `/meetings` y `/upgrade`.
+7. Actualizar `metadata` en `src/app/layout.tsx`.
+8. Corregir los textos con problemas de codificacion.
+9. Revisar el script `npm run lint`, porque en Next.js 15 el comando `next lint` puede requerir ajuste segun la configuracion del proyecto.
