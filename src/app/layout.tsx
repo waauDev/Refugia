@@ -1,9 +1,12 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
+import {NuqsAdapter} from "nuqs/adapters/next";
+
 
 import { TRPCReactProvider } from '@/trpc/client';
 import { Toaster } from "@/components/ui/sonner";
+
 
 const inter = Inter({
   subsets: ["latin"],
@@ -22,16 +25,18 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <TRPCReactProvider>
-      <html lang="es">
-        
-        <body        
-          className={`${inter.variable} font-sans antialiased`}
-        >
-          <Toaster />
-          {children}
-        </body>
-      </html>
-    </TRPCReactProvider>
+    <NuqsAdapter>
+      <TRPCReactProvider>
+        <html lang="es">
+          
+          <body        
+            className={`${inter.variable} font-sans antialiased`}
+          >
+            <Toaster />
+            {children}
+          </body>
+        </html>
+      </TRPCReactProvider>
+    </NuqsAdapter>
   );
 }
