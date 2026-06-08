@@ -4,7 +4,7 @@ import { createTRPCRouter,  protectedProcedure } from "@/trpc/init";
 import { TRPCError } from "@trpc/server";
 import {z} from "zod"
 import { and, count, desc, eq, getTableColumns, ilike, sql } from "drizzle-orm";
-import { agentsInserSchema, agentsUpdateSchema } from "../shemas";
+import { agentsInserSchema, agentsUpdateSchema } from "../schemas";
 import { DEFAULT_PAGE, DEFAULT_PAGE_SIZE, MAX_PAGE_SIZE, MIN_PAGE_SIZE } from "@/constants";
 
 
