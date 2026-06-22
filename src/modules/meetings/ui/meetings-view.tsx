@@ -12,6 +12,7 @@ export const MeetingsView = () =>{
 
     return (
         <div>
+            por hacer: datatable
             {JSON.stringify(data?.items)}
         </div>
     )
