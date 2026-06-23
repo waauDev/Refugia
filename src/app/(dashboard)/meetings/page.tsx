@@ -20,7 +20,7 @@ const Page = async () =>{
     }
     const queryClient = getQueryClient();
 
-    void queryClient.prefetchQuery(
+    await queryClient.prefetchQuery(
         trpc.meetings.getMany.queryOptions({})
     )
     return(

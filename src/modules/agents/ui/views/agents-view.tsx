@@ -4,7 +4,7 @@ import {  useSuspenseQuery } from "@tanstack/react-query"
 import { useTRPC} from "@/trpc/client"
 import { LoadingState } from "@/components/loading-state";
 import { ErrorState } from "@/components/error-state";
-import { DataTable } from "../components/data-table";
+import { DataTable } from "../../../../components/ui/data-table";
 import { columns} from "../components/colums";
 import { EmptyState } from "@/components/empy-state";
 import { useAgentsFilters } from "../../hooks/use-agents-filters";
