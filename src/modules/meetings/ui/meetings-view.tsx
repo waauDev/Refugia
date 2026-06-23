@@ -2,8 +2,11 @@
 
 import { ErrorState } from "@/components/error-state";
 import { LoadingState } from "@/components/loading-state";
+import { DataTable } from "@/components/ui/data-table";
 import { useTRPC } from "@/trpc/client"
 import {  useSuspenseQuery } from "@tanstack/react-query"
+import { columns } from "./components/colums";
+import { EmptyState } from "@/components/empy-state";
 
 export const MeetingsView = () =>{
 
@@ -11,10 +14,14 @@ export const MeetingsView = () =>{
     const {data} = useSuspenseQuery(trpc.meetings.getMany.queryOptions({}))
 
     return (
-        <div>
-            por hacer: datatable
-            {JSON.stringify(data?.items)}
-        </div>
+       <div className="flex-1 pb-4 px-4 md:px-8 flex flex-col gap-y-4">
+        <DataTable data={data.items} columns={columns}/>
+        
+        {data.items.length ===0 &&(
+        <EmptyState title="Crea tu primer espacio"
+                        description="Crea tu primer espacio"/>
+                    )}
+       </div>
     )
 }
 
