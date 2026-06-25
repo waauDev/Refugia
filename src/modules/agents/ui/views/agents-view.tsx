@@ -8,7 +8,7 @@ import { DataTable } from "../../../../components/ui/data-table";
 import { columns} from "../components/colums";
 import { EmptyState } from "@/components/empy-state";
 import { useAgentsFilters } from "../../hooks/use-agents-filters";
-import { DataPagination } from "../components/data-pagination";
+import { DataPagination } from "../../../../components/data-pagination";
 import { useRouter } from "next/navigation";
 
 
