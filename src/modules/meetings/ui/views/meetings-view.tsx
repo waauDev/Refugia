@@ -5,11 +5,13 @@ import { LoadingState } from "@/components/loading-state";
 import { DataTable } from "@/components/ui/data-table";
 import { useTRPC } from "@/trpc/client"
 import {  useSuspenseQuery } from "@tanstack/react-query"
-import { columns } from "./components/colums";
+
 import { EmptyState } from "@/components/empy-state";
-import { useMeetingsFilters } from "../hooks/use-meetings-filters";
+
 import { DataPagination } from "@/components/data-pagination";
 import { useRouter } from "next/navigation";
+import { useMeetingsFilters } from "../../hooks/use-meetings-filters";
+import { columns } from "../components/colums";
 
 export const MeetingsView = () =>{
 
