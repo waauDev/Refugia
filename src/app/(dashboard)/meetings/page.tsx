@@ -1,7 +1,7 @@
 import { auth } from "@/lib/auth";
 import { loadSearchParams } from "@/modules/meetings/params";
 import { MeetingsListHeader } from "@/modules/meetings/ui/components/meetings-list-header";
-import { MeetingsView, MeetingsViewError, MeetingsViewLoading } from "@/modules/meetings/ui/meetings-view"
+
 import { getQueryClient, trpc } from "@/trpc/server"
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import { headers } from "next/headers";
@@ -10,6 +10,7 @@ import { Suspense } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 
 import {SearchParams} from "nuqs/server"
+import { MeetingsView, MeetingsViewError, MeetingsViewLoading } from "@/modules/meetings/ui/views/meetings-view";
 
 interface Props{
     searchParams:Promise<SearchParams>
