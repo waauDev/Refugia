@@ -12,10 +12,12 @@ import { generateAvartarUri } from "@/lib/avatar";
 
 
 
+
 export const meetingsRouter = createTRPCRouter({
 
     GenerateToken : protectedProcedure.mutation(async({ctx})=>{
-        await streamVideo.upsertUsers([{
+        await streamVideo.upsertUsers([
+            {
             id:ctx.auth.user.id,
             name: ctx.auth.user.name,
             role:"admin",
@@ -26,11 +28,12 @@ export const meetingsRouter = createTRPCRouter({
     ]);
     const expirationTime = Math.floor(Date.now()/1000)+3600;
     const issueAt = Math.floor(Date.now()/1000)-60;
-
+    
+    
     const token = streamVideo.generateUserToken({
         user_id:ctx.auth.user.id,
-        exp: expirationTime,
-        validity_in_seconds:issueAt
+        exp:expirationTime,
+        iat:issueAt,
     });
 
     return token;
@@ -99,6 +102,7 @@ export const meetingsRouter = createTRPCRouter({
                     userId:ctx.auth.user.id
                 })
                 .returning();
+                
             const call= streamVideo.video.call("default", createdMeeting.id);
 
             await call.create({
